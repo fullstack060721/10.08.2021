@@ -59,4 +59,15 @@ create or replace function sp_get_movies_price_range(out min_price double precis
     end;
     $$;
 
-
+create or replace function sp_get_movies_price_range_bp(out min_price double precision,
+    out max_price double precision, out avg_price double precision)
+    language plpgsql as $$
+    begin
+        select min(price), max(price), avg(price)::numeric(5, 2)
+        into min_price, max_price, avg_price
+        from movies;
+    end;
+    $$;
+    
+select * from sp_get_movies_price_range();
+select * from sp_get_movies_price_range_bp();
