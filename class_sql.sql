@@ -71,3 +71,39 @@ create or replace function sp_get_movies_price_range_bp(out min_price double pre
     
 select * from sp_get_movies_price_range();
 select * from sp_get_movies_price_range_bp();
+
+create or replace function sp_get_most_expansive_movie_name(out movie_name text)
+    language plpgsql as $$
+    declare
+        max_price double precision := 0;
+    begin
+        select max(price) into max_price
+        from movies;
+
+        select movies.title into movie_name
+        from movies where movies.price = max_price
+        limit 1;
+    end;
+    $$;
+
+select * from sp_get_most_expansive_movie_name();
+
+create or replace function sp_count_movies_countries() returns bigint
+    language plpgsql as $$
+    declare
+        count_movies bigint := 0;
+        count_countries bigint := 0;
+    begin
+        select count(*) into count_movies
+        from movies;
+
+        select count(*) into count_countries
+        from countries;
+
+        return count_movies + count_countries;
+    end;
+    $$;
+
+select * from sp_count_movies_countries();
+
+
